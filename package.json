@@ -1,6 +1,9 @@
 {
   "name": "recipe-book-server",
   "version": "1.0.0",
+  "engines": {
+    "node": "10.5.0"
+  },
   "description": "This is the server of Recipe book app",
   "main": "index.js",
   "scripts": {
