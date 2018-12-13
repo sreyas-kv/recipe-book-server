@@ -36,10 +36,10 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
     if (req.method === 'OPTIONS') {
-      return res.sendStatus(204);
+        return res.sendStatus(204);
     }
     next();
-  });
+});
 
 
 
@@ -57,7 +57,7 @@ app.use('/rating', rating);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 //Protected endpoint which needs a valid JWT to access it
-app.get('/protected', jwtAuth, (req,res) => {
+app.get('/protected', jwtAuth, (req, res) => {
     return res.json({
         data: 'recipe-book'
     });
@@ -65,8 +65,8 @@ app.get('/protected', jwtAuth, (req,res) => {
 
 
 //Catch all endpoint if client makes request to non existent end point
-app.use('*', function(req, res) {
-    res.status(404).json({message: 'Route Not Found'});
+app.use('*', function (req, res) {
+    res.status(404).json({ message: 'Route Not Found' });
 });
 
 // closeServer needs access to a server object, but that only
@@ -80,31 +80,33 @@ function runServer(databaseUrl, port = PORT) {
         mongoose.connect(
             databaseUrl,
             err => {
-                if(err){
+                if (err) {
                     return reject(err);
                 }
                 server = app
-                .listen(port, () => {
-                    console.log(`This Server is listening to port ${port}`);
-                    resolve();
-                })
-                .on('error', error => {
-                    mongoose.disconnect();
-                    reject(err);
-                });
+                    .listen(port, () => {
+                        console.log(`This Server is listening to port ${port}`);
+                        resolve();
+                    })
+                    .on('error', error => {
+                        mongoose.disconnect();
+                        reject(err);
+                    });
             }
         )
     })
 }
 
 //Closing the server
-function closeServer(){
+function closeServer() {
     return mongoose.disconnect().then(() => {
         return new Promise((resolve, reject) => {
-            if(err) {
-                return reject(err);
-            }
-            resolve();
+            server.close(err => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve();
+            });
         });
     });
 }
@@ -112,7 +114,7 @@ function closeServer(){
 
 // if server.js is called directly (aka, with `node server.js`), this block
 // runs. but we also export the runServer command so other code (for instance, test code) can start the server as needed.
-if(require.main === module){
+if (require.main === module) {
     runServer(DATABASE_URL).catch(err => console.error(err));
 }
 
